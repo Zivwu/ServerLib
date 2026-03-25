@@ -1,4 +1,4 @@
-package com.ziv.EchoSync;
+package com.ziv.echosync;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

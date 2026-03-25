@@ -1,4 +1,4 @@
-package com.ziv.EchoSync;
+package com.ziv.echosync;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

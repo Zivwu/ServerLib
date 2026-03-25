@@ -1,4 +1,4 @@
-package com.ziv.EchoSync;
+package com.ziv.echosync;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
