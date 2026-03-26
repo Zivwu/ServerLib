@@ -1,6 +1,8 @@
 package com.ziv.echosync;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ziv.echosync.websocket.EchoWebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,9 @@ public class ClipboardController {
     @Autowired
     private ClipboardMapper clipboardMapper;
 
+    @Autowired
+    private ObjectMapper objectMapper; // Spring Boot 自带的 JSON 处理工具
+
     /**
      * 1. 接收客户端推送的剪贴板内容并保存
      */
@@ -26,6 +31,17 @@ public class ClipboardController {
 
         // 调用 MyBatis-Plus 提供的 insert 方法，直接存入数据库！
         clipboardMapper.insert(clipboard);
+
+        // 2. 核心合并点：数据落盘后，立刻通过 WebSocket 广播给所有在线设备！
+        try {
+            // 将对象转为 JSON 字符串
+            String jsonMessage = objectMapper.writeValueAsString(clipboard);
+            // 广播给所有连接的客户端
+            EchoWebSocketServer.broadcast(jsonMessage);
+        } catch (Exception e) {
+            // 如果转换 JSON 失败，打印错误日志，但不影响返回成功状态
+            System.err.println("JSON 转换失败或广播异常: " + e.getMessage());
+        }
 
         return "Sync Success! ID: " + clipboard.getId();
     }
